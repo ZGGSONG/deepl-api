@@ -7,7 +7,7 @@ import (
 	"api4Deeplx/util"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -58,18 +58,18 @@ func handle(sourceMsg []string) {
 		log.Printf("请求出错: %v\n", err)
 	}
 	defer respBytes.Body.Close()
-	body, _ := ioutil.ReadAll(respBytes.Body)
+	body, _ := io.ReadAll(respBytes.Body)
 
 	var resp deepl.Response
 	_ = json.Unmarshal(body, &resp)
 
 	if resp.Result.Texts != nil {
 		serveResp = []string{resp.Result.Texts[0].Text, ""}
-		//log.Printf("translateText: %v\n", resp.Result.Texts[0].Text)
+		log.Printf("translateText: %v\n", resp.Result.Texts[0].Text)
 	} else {
 		serveResp = []string{resp.Error.Message, string(rune(resp.Error.Code))}
-		//log.Printf("msg: %v\n", resp.Error.Message)
-		//log.Printf("code: %v\n", resp.Error.Code)
+		log.Printf("msg: %v\n", resp.Error.Message)
+		log.Printf("code: %v\n", resp.Error.Code)
 	}
 	global.GLO_RESP_CH <- serveResp
 }

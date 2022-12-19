@@ -6,8 +6,8 @@ type Request struct {
 	TargetLang string `json:"target_lang"`
 }
 type Response struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
+	Code int `json:"code"`
+	//Msg  string `json:"msg"`
 	Data string `json:"data"`
 }
 

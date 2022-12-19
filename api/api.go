@@ -21,11 +21,12 @@ func Translate(ctx *gin.Context) {
 	case respText := <-global.GLO_RESP_CH:
 		if respText[1] == "" {
 			resp.Code = http.StatusOK
-			resp.Msg = respText[0]
+			resp.Data = respText[0]
+			//resp.Msg = respText[0]
 			ctx.JSON(http.StatusOK, resp)
 		} else {
 			resp.Code = http.StatusGatewayTimeout
-			resp.Msg = respText[0]
+			//resp.Msg = respText[0]
 		}
 	}
 
