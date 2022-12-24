@@ -1,21 +1,19 @@
 package util
 
 import (
-	"strings"
 	"time"
 )
 
-//
 // GenerateTimestamp
-//  @Description: 生成特定时间戳
-//  @param texts
-//  @return int64
 //
+//	@Description: 生成特定时间戳
+//	@param texts
+//	@return int64
 func GenerateTimestamp(texts string) int64 {
 	// 当前时间戳
 	ts := time.Now().UnixMilli()
 	// 转小写
-	texts = strings.ToLower(texts)
+	//texts = strings.ToLower(texts)
 	// i 计数
 	var iCount int64
 	for _, text := range texts {
@@ -30,12 +28,11 @@ func GenerateTimestamp(texts string) int64 {
 	return ret
 }
 
-//
 // GenerateMethod
-//  @Description: 根据id生成新的方法
-//  @param id
-//  @return method
 //
+//	@Description: 根据id生成新的方法
+//	@param id
+//	@return method
 func GenerateMethod(id int64) (method string) {
 	if (id+3)%13 == 0 || (id+5)%29 == 0 {
 		method = "\"method\" : \""

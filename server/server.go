@@ -47,6 +47,7 @@ func handle(sourceMsg []string) {
 	timeSpan := util.GenerateTimestamp(text)
 	id := idNext + 1
 	method := util.GenerateMethod(id)
+	fmt.Printf("%v\n%v\n%v\n", timeSpan, id, method)
 	var reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
 		"{\"texts\":[{\"text\":\"%v\"}],"+
 		"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
@@ -73,3 +74,28 @@ func handle(sourceMsg []string) {
 	}
 	global.GLO_RESP_CH <- serveResp
 }
+
+/*
+This code produces the following output.
+
+zh-Hans Chinese (Simplified)                    : neutral
+zh-TW   Chinese (Traditional, Taiwan)           : specific
+zh-CN   Chinese (Simplified, PRC)               : specific
+zh-HK   Chinese (Traditional, Hong Kong S.A.R.) : specific
+zh-SG   Chinese (Simplified, Singapore)         : specific
+zh-MO   Chinese (Traditional, Macao S.A.R.)     : specific
+zh      Chinese                                 : neutral
+zh-Hant Chinese (Traditional)                   : neutral
+zh-CHS  Chinese (Simplified) Legacy             : neutral
+zh-CHT  Chinese (Traditional) Legacy            : neutral
+
+*/
+
+//if (name == "zh-CHT")
+//{
+//return "zh-Hant";
+//}
+//if (name == "zh-CHS")
+//{
+//return "zh-Hans";
+//}

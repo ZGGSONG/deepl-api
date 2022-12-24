@@ -1,7 +1,15 @@
 package main
 
-import "api4Deeplx/server"
+import (
+	"C"
+	"api4Deeplx/server"
+)
 
 func main() {
-	server.Run()
+	run()
+}
+
+//export run
+func run() {
+	go server.Run()
 }
