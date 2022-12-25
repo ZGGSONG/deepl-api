@@ -11,5 +11,5 @@ func main() {
 
 //export run
 func run() {
-	go server.Run()
+	server.Run()
 }

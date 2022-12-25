@@ -1,8 +1,27 @@
 package util
 
 import (
+	"bytes"
+	"fmt"
+	"io"
+	"math"
+	"math/rand"
+	"net/http"
 	"time"
 )
+
+var NextId int64
+
+func init() {
+	//按规则生成结果
+	NextId = int64(math.Round(rand.New(rand.NewSource(time.Now().UnixNano())).Float64()*10000.0) * 10000)
+}
+
+func CreateId() int64 {
+	var num = NextId
+	NextId = num + 1
+	return num
+}
 
 // GenerateTimestamp
 //
@@ -39,5 +58,37 @@ func GenerateMethod(id int64) (method string) {
 	} else {
 		method = "\"method\": \""
 	}
+	return
+}
+
+func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
+	client := &http.Client{}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(reqStr)))
+	if err != nil {
+		return nil, err
+	}
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
+}
+
+func GenerateRequestStr(method, text, targetLang string, timeSpan, id int64) (reqStr string) {
+	reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
+		"{\"texts\":[{\"text\":\"%v\"}],"+
+		"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
+		"\"timestamp\":%v},\"id\":%v}", method, text, targetLang, timeSpan, id)
 	return
 }
