@@ -86,6 +86,14 @@ func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
 }
 
 func GenerateRequestStr(method, text, targetLang string, timeSpan, id int64) (reqStr string) {
+	if targetLang == "ZH" {
+		reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
+			"{\"texts\":[{\"text\":\"%v\"}],"+
+			"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
+			"\"timestamp\":%v,\"regionalVariant\":\"zh-CN\"},\"id\":%v}", method, text, targetLang, timeSpan, id)
+		return
+	}
+	//无需区域变量
 	reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
 		"{\"texts\":[{\"text\":\"%v\"}],"+
 		"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+

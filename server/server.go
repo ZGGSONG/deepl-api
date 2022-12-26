@@ -37,7 +37,6 @@ func handle(sourceMsg []string) {
 	id := util.CreateId()
 	method := util.GenerateMethod(id)
 
-	//fmt.Printf("%v\n%v\n%v\n", timeSpan, id, method)
 	var reqStr = util.GenerateRequestStr(method, text, targetLang, timeSpan, id)
 
 	var headers = make(map[string]string)
@@ -58,26 +57,27 @@ func handle(sourceMsg []string) {
 		log.Printf("translateText: %v\n", resp.Result.Texts[0].Text)
 	} else {
 		serveResp = []string{resp.Error.Message, string(rune(resp.Error.Code))}
-		log.Printf("msg: %v\n", resp.Error.Message)
-		log.Printf("code: %v\n", resp.Error.Code)
+		log.Printf("msg: %v\n", resp.Error.Message) //To many requests
+		log.Printf("code: %v\n", resp.Error.Code)   //1042911
 	}
 	global.GLO_RESP_CH <- serveResp
 }
 
-//TODO
+//TODO: 修复目标语言 neutral
 /*
 This code produces the following output.
 
 zh-Hans Chinese (Simplified)                    : neutral
+zh      Chinese                                 : neutral
+zh-Hant Chinese (Traditional)                   : neutral
+zh-CHS  Chinese (Simplified) Legacy             : neutral
+zh-CHT  Chinese (Traditional) Legacy            : neutral
+
 zh-TW   Chinese (Traditional, Taiwan)           : specific
 zh-CN   Chinese (Simplified, PRC)               : specific
 zh-HK   Chinese (Traditional, Hong Kong S.A.R.) : specific
 zh-SG   Chinese (Simplified, Singapore)         : specific
 zh-MO   Chinese (Traditional, Macao S.A.R.)     : specific
-zh      Chinese                                 : neutral
-zh-Hant Chinese (Traditional)                   : neutral
-zh-CHS  Chinese (Simplified) Legacy             : neutral
-zh-CHT  Chinese (Traditional) Legacy            : neutral
 
 */
 
