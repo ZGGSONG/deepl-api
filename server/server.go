@@ -6,7 +6,7 @@ import (
 	"api4Deeplx/model/deepl"
 	"api4Deeplx/util"
 	"encoding/json"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
