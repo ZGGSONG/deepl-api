@@ -1,12 +1,14 @@
 package util
 
 import (
+	"api4Deeplx/model/deepl"
 	"bytes"
-	"fmt"
+	"encoding/json"
 	"io"
 	"math"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -46,17 +48,14 @@ func GenerateTimestamp(texts string) int64 {
 	return num - num%num2 + num2
 }
 
-// GenerateMethod
-//
-//	@Description: 根据id生成新的方法
-//	@param id
-//	@return method
-func GenerateMethod(id int64) (method string) {
+func adjustJsonContent(sourceReq string, id int64) (targetReq string) {
+	var method string
 	if (id+3)%13 == 0 || (id+5)%29 == 0 {
 		method = "\"method\" : \""
 	} else {
 		method = "\"method\": \""
 	}
+	targetReq = strings.Replace(sourceReq, "\"method\":\"", method, 1)
 	return
 }
 
@@ -84,7 +83,29 @@ func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
 	return body, nil
 }
 
-func GenerateRequestStr(method, text, targetLang string, timeSpan, id int64) (reqStr string) {
+func GenerateRequestStr(text, targetLang string, timeSpan, id int64) (reqStr string) {
+	req := deepl.Request{
+		Jsonrpc: "2.0",
+		Method:  "LMT_handle_texts",
+		Params: deepl.ReqParams{
+			Texts: []deepl.ReqParamsTexts{
+				{
+					Text: text,
+				},
+			},
+			Lang: deepl.ReqParamsLang{
+				SourceLangUserSelected: "auto",
+				TargetLang:             targetLang,
+			},
+			Timestamp:       timeSpan,
+			CommonJobParams: deepl.ReqParamsCommonJobParams{},
+		},
+		Id: id,
+	}
+
+	bytes, _ := json.Marshal(req)
+	reqStr = string(bytes)
+	reqStr = adjustJsonContent(reqStr, id)
 	//if targetLang == "ZH" {
 	//	reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
 	//		"{\"texts\":[{\"text\":\"%v\"}],"+
@@ -93,9 +114,9 @@ func GenerateRequestStr(method, text, targetLang string, timeSpan, id int64) (re
 	//	return
 	//}
 	//无需区域变量
-	reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
-		"{\"texts\":[{\"text\":\"%v\"}],"+
-		"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
-		"\"timestamp\":%v,\"commonJobParams\": {}},\"id\":%v}", method, text, targetLang, timeSpan, id)
+	//reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
+	//	"{\"texts\":[{\"text\":\"%v\"}],"+
+	//	"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
+	//	"\"timestamp\":%v,\"commonJobParams\": {}},\"id\":%v}", method, text, targetLang, timeSpan, id)
 	return
 }

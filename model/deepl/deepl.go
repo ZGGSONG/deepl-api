@@ -1,25 +1,50 @@
 package deepl
 
+type Request struct {
+	Jsonrpc string    `json:"jsonrpc"`
+	Method  string    `json:"method"`
+	Params  ReqParams `json:"params"`
+	Id      int64     `json:"id"`
+}
+
+type ReqParams struct {
+	Texts           []ReqParamsTexts         `json:"texts"`
+	Lang            ReqParamsLang            `json:"lang"`
+	Timestamp       int64                    `json:"timestamp"`
+	CommonJobParams ReqParamsCommonJobParams `json:"commonJobParams"`
+}
+
+type ReqParamsTexts struct {
+	Text string `json:"text"`
+}
+type ReqParamsLang struct {
+	TargetLang             string `json:"target_lang"`
+	SourceLangUserSelected string `json:"source_lang_user_selected"`
+}
+type ReqParamsCommonJobParams struct {
+	RegionalVariant string `json:"regionalVariant,omitempty"`
+}
+
 type Response struct {
-	Jsonrpc string `json:"jsonrpc"`
-	Id      int    `json:"id"`
-	Result  Result `json:"result"`
-	Error   Error  `json:"error"`
+	Jsonrpc string     `json:"jsonrpc"`
+	Id      int        `json:"id"`
+	Result  RespResult `json:"result"`
+	Error   RespError  `json:"error"`
 }
 
-type Result struct {
-	Texts             []Texts           `json:"texts"`
-	Lang              string            `json:"lang"`
-	LangIsConfident   bool              `json:"lang_is_confident"`
-	DetectedLanguages DetectedLanguages `json:"detectedLanguages"`
+type RespResult struct {
+	Texts             []RespResultText            `json:"texts"`
+	Lang              string                      `json:"lang"`
+	LangIsConfident   bool                        `json:"lang_is_confident"`
+	DetectedLanguages RespResultDetectedLanguages `json:"detectedLanguages"`
 }
 
-type Texts struct {
+type RespResultText struct {
 	Alternatives []interface{} `json:"alternatives"`
 	Text         string        `json:"text"`
 }
 
-type DetectedLanguages struct {
+type RespResultDetectedLanguages struct {
 	EN          float64 `json:"EN"`
 	DE          float64 `json:"DE"`
 	FR          float64 `json:"FR"`
@@ -49,7 +74,7 @@ type DetectedLanguages struct {
 	Unsupported float64 `json:"unsupported"`
 }
 
-type Error struct {
+type RespError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }

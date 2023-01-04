@@ -35,9 +35,8 @@ func handle(sourceMsg []string) {
 	targetLang := sourceMsg[1]
 	timeSpan := util.GenerateTimestamp(text)
 	id := util.CreateId()
-	method := util.GenerateMethod(id)
 
-	var reqStr = util.GenerateRequestStr(method, text, targetLang, timeSpan, id)
+	var reqStr = util.GenerateRequestStr(text, targetLang, timeSpan, id)
 
 	var headers = make(map[string]string)
 	headers["Content-Type"] = ContentType
