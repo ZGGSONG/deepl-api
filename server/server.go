@@ -42,13 +42,13 @@ func handle(sourceMsg []string) {
 	var headers = make(map[string]string)
 	headers["Content-Type"] = ContentType
 	headers["Referer"] = Refer
-
+	log.Printf("generate source: %v", reqStr)
 	body, err := util.HttpPost(URL, reqStr, headers)
 	if err != nil {
 		global.GLO_RESP_CH <- []string{err.Error(), "NOT NULL"}
 		return
 	}
-
+	log.Printf("translate source: %v", string(body))
 	var resp deepl.Response
 	_ = json.Unmarshal(body, &resp)
 

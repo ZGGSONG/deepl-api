@@ -30,21 +30,20 @@ func CreateId() int64 {
 //	@return int64
 func GenerateTimestamp(texts string) int64 {
 	// 当前时间戳
-	ts := time.Now().UnixMilli()
+	num := time.Now().UnixMilli()
 	// 转小写
 	//texts = strings.ToLower(texts)
 	// i 计数
-	var iCount int64
+	var num2 int64
 	for _, text := range texts {
 		if string(text) == "i" {
-			iCount++
+			num2++
 		}
 	}
-	if iCount == 0 {
-		iCount = 1
+	if num2 == 0 {
+		num2 = 1
 	}
-	ret := ts - ts%iCount + iCount
-	return ret
+	return num - num%num2 + num2
 }
 
 // GenerateMethod
@@ -86,17 +85,17 @@ func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
 }
 
 func GenerateRequestStr(method, text, targetLang string, timeSpan, id int64) (reqStr string) {
-	if targetLang == "ZH" {
-		reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
-			"{\"texts\":[{\"text\":\"%v\"}],"+
-			"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
-			"\"timestamp\":%v,\"regionalVariant\":\"zh-CN\"},\"id\":%v}", method, text, targetLang, timeSpan, id)
-		return
-	}
+	//if targetLang == "ZH" {
+	//	reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
+	//		"{\"texts\":[{\"text\":\"%v\"}],"+
+	//		"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
+	//		"\"timestamp\":%v,\"commonJobParams\": {\"regionalVariant\":\"zh-CN\"}},\"id\":%v}", method, text, targetLang, timeSpan, id)
+	//	return
+	//}
 	//无需区域变量
 	reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
 		"{\"texts\":[{\"text\":\"%v\"}],"+
 		"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
-		"\"timestamp\":%v},\"id\":%v}", method, text, targetLang, timeSpan, id)
+		"\"timestamp\":%v,\"commonJobParams\": {}},\"id\":%v}", method, text, targetLang, timeSpan, id)
 	return
 }
