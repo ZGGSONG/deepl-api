@@ -9,20 +9,23 @@ type Request struct {
 
 type ReqParams struct {
 	Texts           []ReqParamsTexts         `json:"texts"`
+	Splitting       string                   `json:"splitting"`
 	Lang            ReqParamsLang            `json:"lang"`
 	Timestamp       int64                    `json:"timestamp"`
 	CommonJobParams ReqParamsCommonJobParams `json:"commonJobParams"`
 }
 
 type ReqParamsTexts struct {
-	Text string `json:"text"`
+	Text                string `json:"text"`
+	RequestAlternatives int    `json:"requestAlternatives"`
 }
 type ReqParamsLang struct {
 	TargetLang             string `json:"target_lang"`
-	SourceLangUserSelected string `json:"source_lang_user_selected"`
+	SourceLangUserSelected string `json:"source_lang_user_selected,omitempty"`
 }
 type ReqParamsCommonJobParams struct {
 	RegionalVariant string `json:"regionalVariant,omitempty"`
+	WasSpoken       bool   `json:"wasSpoken"`
 }
 
 type Response struct {

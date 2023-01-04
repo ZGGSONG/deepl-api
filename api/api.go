@@ -14,8 +14,7 @@ func Translate(ctx *gin.Context) {
 	if err := ctx.BindJSON(&req); err != nil {
 		log.Printf("Error translating, %v\n", err)
 	}
-	sourceText, targetLang := req.Text, req.TargetLang
-	global.GLO_REQ_CH <- []string{sourceText, targetLang}
+	global.GLO_REQ_CH <- []string{req.Text, req.SourceLang, req.TargetLang}
 
 	select {
 	case respText := <-global.GLO_RESP_CH:

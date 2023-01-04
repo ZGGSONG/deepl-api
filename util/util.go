@@ -83,40 +83,58 @@ func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
 	return body, nil
 }
 
-func GenerateRequestStr(text, targetLang string, timeSpan, id int64) (reqStr string) {
+func ConvertRegionalNameAndSourceLang(sourceLang, targetLang string) (sourceLangRet, regionalVariant string) {
+	if sourceLang == "auto" {
+		sourceLangRet = ""
+	} else {
+		sourceLangRet = sourceLang
+	}
+	if targetLang == "EN" {
+		regionalVariant = "en-US"
+	} else {
+		regionalVariant = ""
+	}
+	return
+}
+
+func GenerateRequestStr(text, sourceLang, targetLang, regionalVariant string, timeSpan, id int64) (reqStr string) {
 	req := deepl.Request{
 		Jsonrpc: "2.0",
 		Method:  "LMT_handle_texts",
 		Params: deepl.ReqParams{
 			Texts: []deepl.ReqParamsTexts{
 				{
-					Text: text,
+					Text:                text,
+					RequestAlternatives: 3,
 				},
 			},
+			Splitting: "newlines",
 			Lang: deepl.ReqParamsLang{
-				SourceLangUserSelected: "auto",
+				SourceLangUserSelected: sourceLang,
 				TargetLang:             targetLang,
 			},
-			Timestamp:       timeSpan,
-			CommonJobParams: deepl.ReqParamsCommonJobParams{},
+			Timestamp: timeSpan,
+			CommonJobParams: deepl.ReqParamsCommonJobParams{
+				WasSpoken:       false,
+				RegionalVariant: regionalVariant,
+			},
 		},
 		Id: id,
 	}
 
-	bytes, _ := json.Marshal(req)
-	reqStr = string(bytes)
+	marshal, _ := json.Marshal(req)
+	reqStr = string(marshal)
+
+	var count int
+	if len(string(marshal)) > 300 {
+		count = 0
+	} else {
+		count = 3
+	}
+	req.Params.Texts[0].RequestAlternatives = count
+	marshal, _ = json.Marshal(req)
+	reqStr = string(marshal)
+
 	reqStr = adjustJsonContent(reqStr, id)
-	//if targetLang == "ZH" {
-	//	reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
-	//		"{\"texts\":[{\"text\":\"%v\"}],"+
-	//		"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
-	//		"\"timestamp\":%v,\"commonJobParams\": {\"regionalVariant\":\"zh-CN\"}},\"id\":%v}", method, text, targetLang, timeSpan, id)
-	//	return
-	//}
-	//无需区域变量
-	//reqStr = fmt.Sprintf("{\"jsonrpc\":\"2.0\",%vLMT_handle_texts\",\"params\":"+
-	//	"{\"texts\":[{\"text\":\"%v\"}],"+
-	//	"\"lang\":{\"target_lang\":\"%v\",\"source_lang_user_selected\":\"auto\"},"+
-	//	"\"timestamp\":%v,\"commonJobParams\": {}},\"id\":%v}", method, text, targetLang, timeSpan, id)
 	return
 }

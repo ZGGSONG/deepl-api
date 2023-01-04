@@ -1,0 +1,39 @@
+>> 本文件内容为 https://www2.deepl.com/jsonrpc 的请求抓包详情，供您分析和定位问题。
+
+1. 请求内容 Request:
+
+POST /jsonrpc HTTP/1.1
+Host: www2.deepl.com
+Accept: */*
+x-app-os-name: iOS
+x-app-instance-id: 91048F07-3A3B-43EC-A0AA-490A3A64B303
+x-app-os-version: 15.7.1
+Accept-Language: zh-CN,zh-Hans;q=0.9
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/json
+x-app-device: iPhone14,2
+Content-Length: 244
+User-Agent: DeepL-iOS/2.4.0 iOS 15.7.1 (iPhone14,2)
+X-Instance: 91048F07-3A3B-43EC-A0AA-490A3A64B303
+x-app-build: 301602
+x-app-version: 2.4
+Referer: https://www.deepl.com/
+Cookie: LMTBID=v2|c459a416-285b-4429-a4b6-3db1cae90819|d2236814a1ae9fd9086028884f5a8ad4
+Connection: keep-alive
+
+{"jsonrpc":"2.0","method": "LMT_handle_texts","id":3767710011,"params":{"texts":[{"text":"I love you","requestAlternatives":3}],"splitting":"newlines","lang":{"target_lang":"ZH"},"timestamp":1672828020595,"commonJobParams":{"wasSpoken":false}}}
+
+2. 响应内容 Response:
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 04 Jan 2023 10:27:03 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 842
+Connection: keep-alive
+
+{"jsonrpc":"2.0","id":3767710011,"result":{"texts":[{"alternatives":[{"text":"\u6211\u7231\u4F60\u3002"},{"text":"\u6211\u7231\u4F60\uFF0C\u6211\u7231\u4F60\u4EEC"},{"text":"\u6211\u7231\u4F60\uFF0C\u6211\u559C\u6B22\u4F60"}],"text":"\u6211\u7231\u4F60"}],"lang":"EN","lang_is_confident":false,"detectedLanguages":{"EN":0.244113,"DE":0.002008,"FR":0.018737999999999999,"ES":0.027537,"PT":0.0027129999999999999,"IT":0.038312,"NL":0.016815,"PL":0.0026119999999999999,"RU":0.001475,"ZH":0.00314,"JA":0.001762,"BG":0.002002,"CS":0.027084999999999999,"DA":0.029487,"EL":0.002054,"ET":0.007103,"FI":0.005611,"HU":0.007195,"LT":0.0051389999999999999,"LV":0.005320999999999999,"RO":0.012992,"SK":0.014353999999999999,"SL":0.021802,"SV":0.012948,"TR":0.028288999999999999,"ID":0.015968,"UK":0.0009149999999999999,"unsupported":0.44250999999999998}}}
+
+
+====
+该记录由 Stream 抓取，仅用于分析和学习，可 AppStore 搜索『抓包』下载，面向开发者永久免费使用。

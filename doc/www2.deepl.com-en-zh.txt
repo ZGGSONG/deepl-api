@@ -1,0 +1,39 @@
+>> 本文件内容为 https://www2.deepl.com/jsonrpc 的请求抓包详情，供您分析和定位问题。
+
+1. 请求内容 Request:
+
+POST /jsonrpc HTTP/1.1
+Host: www2.deepl.com
+Accept: */*
+x-app-os-name: iOS
+x-app-instance-id: 91048F07-3A3B-43EC-A0AA-490A3A64B303
+x-app-os-version: 15.7.1
+Accept-Language: zh-CN,zh-Hans;q=0.9
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/json
+x-app-device: iPhone14,2
+Content-Length: 257
+User-Agent: DeepL-iOS/2.4.0 iOS 15.7.1 (iPhone14,2)
+X-Instance: 91048F07-3A3B-43EC-A0AA-490A3A64B303
+x-app-build: 301602
+x-app-version: 2.4
+Referer: https://www.deepl.com/
+Cookie: LMTBID=v2|c459a416-285b-4429-a4b6-3db1cae90819|d2236814a1ae9fd9086028884f5a8ad4
+Connection: keep-alive
+
+{"jsonrpc":"2.0","method": "LMT_handle_texts","id":3767710016,"params":{"texts":[{"text":"II just want to do this","requestAlternatives":3}],"splitting":"newlines","lang":{"target_lang":"ZH"},"timestamp":1672828038696,"commonJobParams":{"wasSpoken":false}}}
+
+2. 响应内容 Response:
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 04 Jan 2023 10:27:20 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 601
+Connection: keep-alive
+
+{"jsonrpc":"2.0","id":3767710016,"result":{"texts":[{"alternatives":[{"text":"\u6211\u53EA\u60F3\u505A\u8FD9\u4E2A"},{"text":"\u6211\u53EA\u60F3\u8FD9\u6837\u505A"},{"text":"\u6211\u53EA\u662F\u60F3\u505A\u8FD9\u4E2A"}],"text":"\u6211\u53EA\u60F3\u505A\u8FD9\u4EF6\u4E8B"}],"lang":"EN","lang_is_confident":true,"detectedLanguages":{"EN":0.979008,"FR":0.000049,"PT":0.000039,"NL":0.001184,"PL":0.009995,"CS":0.000044999999999999999,"DA":0.000019999999999999999,"ET":0.000056,"LT":0.000013,"SK":0.000049999999999999999,"SL":0.000028,"SV":0.000011,"ID":0.000054999999999999998,"unsupported":0.009426}}}
+
+
+====
+该记录由 Stream 抓取，仅用于分析和学习，可 AppStore 搜索『抓包』下载，面向开发者永久免费使用。

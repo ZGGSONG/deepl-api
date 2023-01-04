@@ -7,12 +7,14 @@ import (
 	"api4Deeplx/util"
 	"encoding/json"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 )
 
 var (
 	URL         = "https://www2.deepl.com/jsonrpc"
 	Refer       = "https://www.deepl.com/"
 	ContentType = "application/json"
+	UserAgent   = "DeepL-iOS/2.4.0 iOS 15.7.1 (iPhone14,2)"
 )
 
 func Run() {
@@ -32,15 +34,18 @@ func Run() {
 func handle(sourceMsg []string) {
 	var serveResp []string
 	text := sourceMsg[0]
-	targetLang := sourceMsg[1]
+	sourceLang := sourceMsg[1]
+	targetLang := sourceMsg[2]
 	timeSpan := util.GenerateTimestamp(text)
 	id := util.CreateId()
-
-	var reqStr = util.GenerateRequestStr(text, targetLang, timeSpan, id)
+	sourceLang, regionalVariant := util.ConvertRegionalNameAndSourceLang(sourceLang, targetLang)
+	var reqStr = util.GenerateRequestStr(text, sourceLang, targetLang, regionalVariant, timeSpan, id)
 
 	var headers = make(map[string]string)
 	headers["Content-Type"] = ContentType
 	headers["Referer"] = Refer
+	headers["Content-Length"] = strconv.Itoa(len(reqStr))
+	headers["User-Agent"] = UserAgent
 	log.Printf("generate source: %v", reqStr)
 	body, err := util.HttpPost(URL, reqStr, headers)
 	if err != nil {
@@ -61,30 +66,3 @@ func handle(sourceMsg []string) {
 	}
 	global.GLO_RESP_CH <- serveResp
 }
-
-//TODO: 修复目标语言 neutral
-/*
-This code produces the following output.
-
-zh-Hans Chinese (Simplified)                    : neutral
-zh      Chinese                                 : neutral
-zh-Hant Chinese (Traditional)                   : neutral
-zh-CHS  Chinese (Simplified) Legacy             : neutral
-zh-CHT  Chinese (Traditional) Legacy            : neutral
-
-zh-TW   Chinese (Traditional, Taiwan)           : specific
-zh-CN   Chinese (Simplified, PRC)               : specific
-zh-HK   Chinese (Traditional, Hong Kong S.A.R.) : specific
-zh-SG   Chinese (Simplified, Singapore)         : specific
-zh-MO   Chinese (Traditional, Macao S.A.R.)     : specific
-
-*/
-
-//if (name == "zh-CHT")
-//{
-//return "zh-Hant";
-//}
-//if (name == "zh-CHS")
-//{
-//return "zh-Hans";
-//}
