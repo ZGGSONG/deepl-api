@@ -30,6 +30,6 @@ func Translate(ctx *gin.Context) {
 
 }
 
-func Index(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "DeepL Translate Api\n\nPOST {\"text\": \"have a try\", \"source_lang\": \"auto\", \"target_lang\": \"ZH\"} to /translate\n\nhttps://github.com/zu1k")
+func TranslateGet(ctx *gin.Context) {
+	ctx.String(http.StatusOK, "POST {\"text\": \"have a try\", \"source_lang\": \"auto\", \"target_lang\": \"ZH\"} to /translate")
 }
