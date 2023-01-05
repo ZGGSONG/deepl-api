@@ -22,6 +22,7 @@ func GinServe(port int) {
 	r := gin.Default()
 	r = router.CollectRoute(r)
 
+	fmt.Println("starting deepl server at 8000...")
 	if port == 0 {
 		r.Run(":8000")
 	} else {
@@ -55,23 +56,26 @@ func Handle(sourceMsg []string) {
 	headers["Referer"] = Refer
 	headers["Content-Length"] = strconv.Itoa(len(reqStr))
 	headers["User-Agent"] = UserAgent
-	log.Printf("generate source: %v", reqStr)
+	//log.Printf("generate source: %v", reqStr)
 	body, err := util.HttpPost(URL, reqStr, headers)
 	if err != nil {
 		global.GLO_RESP_CH <- []string{err.Error(), "NOT NULL"}
 		return
 	}
-	log.Printf("translate source: %v", string(body))
+	//log.Printf("translate source: %v", string(body))
 	var resp deepl.Response
 	_ = json.Unmarshal(body, &resp)
 
 	if resp.Result.Texts != nil {
 		serveResp = []string{resp.Result.Texts[0].Text, ""}
-		log.Printf("translateText: %v\n", resp.Result.Texts[0].Text)
+		//log.Printf("translateText: %v\n", resp.Result.Texts[0].Text)
 	} else {
 		serveResp = []string{resp.Error.Message, string(rune(resp.Error.Code))}
-		log.Printf("msg: %v\n", resp.Error.Message) //To many requests
-		log.Printf("code: %v\n", resp.Error.Code)   //1042911
+		log.Printf("翻译出错")
+		log.Printf("请求: %v", reqStr)
+		log.Printf("返回: %v", string(body))
+		//log.Printf("msg: %v\n", resp.Error.Message) //To many requests
+		//log.Printf("code: %v\n", resp.Error.Code)   //1042911
 	}
 	global.GLO_RESP_CH <- serveResp
 }

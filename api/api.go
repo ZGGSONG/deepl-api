@@ -24,6 +24,7 @@ func Translate(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, resp)
 		} else {
 			resp.Code = http.StatusGatewayTimeout
+			resp.Data = respText[0]
 		}
 	}
 
