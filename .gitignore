@@ -25,4 +25,6 @@
 *.log
 log/
 
+deepl*
+
 .DS_Store
