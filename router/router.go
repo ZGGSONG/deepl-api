@@ -1,7 +1,7 @@
 package router
 
 import (
-	"deeplapi/api"
+	"deepl_api/api"
 	"github.com/gin-gonic/gin"
 )
 

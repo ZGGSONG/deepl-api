@@ -4,7 +4,7 @@ package util
 
 import (
 	"bytes"
-	"deeplapi/model/deepl"
+	"deepl_api/model/deepl"
 	"encoding/json"
 	"io"
 	"math"

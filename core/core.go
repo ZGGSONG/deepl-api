@@ -1,10 +1,10 @@
 package core
 
 import (
-	"deeplapi/global"
-	"deeplapi/model/deepl"
-	"deeplapi/router"
-	"deeplapi/util"
+	"deepl_api/global"
+	"deepl_api/model/deepl"
+	"deepl_api/router"
+	"deepl_api/util"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"

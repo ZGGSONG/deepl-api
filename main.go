@@ -1,7 +1,7 @@
 package main
 
 import (
-	"deeplapi/server"
+	"deepl_api/server"
 	"time"
 
 	log "github.com/sirupsen/logrus"

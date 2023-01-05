@@ -1,4 +1,4 @@
-module deeplapi
+module deepl_api
 
 go 1.18
 
