@@ -22,7 +22,7 @@ func GinServe(port int) {
 	r := gin.Default()
 	r = router.CollectRoute(r)
 
-	fmt.Println("starting deepl server at 8000...")
+	fmt.Printf("starting deepl server at %v...\n", port)
 	if port == 0 {
 		r.Run(":8000")
 	} else {
