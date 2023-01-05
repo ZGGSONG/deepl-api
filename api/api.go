@@ -1,8 +1,8 @@
 package api
 
 import (
-	"api4Deeplx/global"
-	"api4Deeplx/model"
+	"deeplapi/global"
+	"deeplapi/model"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"

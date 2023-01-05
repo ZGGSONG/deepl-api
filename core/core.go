@@ -1,10 +1,10 @@
 package core
 
 import (
-	"api4Deeplx/global"
-	"api4Deeplx/model/deepl"
-	"api4Deeplx/router"
-	"api4Deeplx/util"
+	"deeplapi/global"
+	"deeplapi/model/deepl"
+	"deeplapi/router"
+	"deeplapi/util"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"

@@ -3,8 +3,8 @@
 package util
 
 import (
-	"api4Deeplx/model/deepl"
 	"bytes"
+	"deeplapi/model/deepl"
 	"encoding/json"
 	"io"
 	"math"

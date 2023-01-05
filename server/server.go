@@ -1,8 +1,8 @@
 package server
 
 import (
-	"api4Deeplx/core"
-	"api4Deeplx/global"
+	"deeplapi/core"
+	"deeplapi/global"
 )
 
 func Run() {

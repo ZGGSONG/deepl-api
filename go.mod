@@ -1,4 +1,4 @@
-module api4Deeplx
+module deeplapi
 
 go 1.18
 
