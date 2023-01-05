@@ -1,3 +1,5 @@
+// Package util
+// @Description: DeepL Rules
 package util
 
 import (
@@ -33,8 +35,6 @@ func CreateId() int64 {
 func GenerateTimestamp(texts string) int64 {
 	// 当前时间戳
 	num := time.Now().UnixMilli()
-	// 转小写
-	//texts = strings.ToLower(texts)
 	// i 计数
 	var num2 int64
 	for _, text := range texts {
@@ -59,30 +59,13 @@ func adjustJsonContent(sourceReq string, id int64) (targetReq string) {
 	return
 }
 
-func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
-	client := &http.Client{}
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(reqStr)))
-	if err != nil {
-		return nil, err
-	}
-	for k, v := range header {
-		req.Header.Set(k, v)
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return body, nil
-}
-
+// ConvertRegionalNameAndSourceLang
+//
+//	@Description: 转换区域变量及source language
+//	@param sourceLang
+//	@param targetLang
+//	@return sourceLangRet
+//	@return regionalVariant
 func ConvertRegionalNameAndSourceLang(sourceLang, targetLang string) (sourceLangRet, regionalVariant string) {
 	if sourceLang == "auto" {
 		sourceLangRet = ""
@@ -97,6 +80,16 @@ func ConvertRegionalNameAndSourceLang(sourceLang, targetLang string) (sourceLang
 	return
 }
 
+// GenerateRequestStr
+//
+//	@Description: 构造请求json
+//	@param text
+//	@param sourceLang
+//	@param targetLang
+//	@param regionalVariant
+//	@param timeSpan
+//	@param id
+//	@return reqStr
 func GenerateRequestStr(text, sourceLang, targetLang, regionalVariant string, timeSpan, id int64) (reqStr string) {
 	req := deepl.Request{
 		Jsonrpc: "2.0",
@@ -137,4 +130,36 @@ func GenerateRequestStr(text, sourceLang, targetLang, regionalVariant string, ti
 
 	reqStr = adjustJsonContent(reqStr, id)
 	return
+}
+
+// HttpPost
+//
+//	@Description: 发送Post请求
+//	@param url
+//	@param reqStr
+//	@param header
+//	@return []byte
+//	@return error
+func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
+	client := &http.Client{}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(reqStr)))
+	if err != nil {
+		return nil, err
+	}
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
 }

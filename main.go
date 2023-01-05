@@ -10,7 +10,7 @@ import (
 func main() {
 	// 初始化日志
 	logger := &lumberjack.Logger{
-		//Filename:   "./Log/Receive_File_Log" + time.Now().Format("20060102_150405") + ".txt",
+		//Filename:   "./Log/deepl_api" + time.Now().Format("20060102_150405") + ".txt",
 		Filename:   "./log/deepl_api.txt",
 		MaxSize:    10,   // 日志文件大小，单位是 MB
 		MaxBackups: 3,    // 最大过期日志保留个数
