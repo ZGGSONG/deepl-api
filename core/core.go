@@ -7,9 +7,10 @@ import (
 	"deepl_api/util"
 	"encoding/json"
 	"fmt"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"strconv"
 )
 
 // GinServe
