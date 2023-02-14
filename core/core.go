@@ -22,11 +22,14 @@ func GinServe(port int) {
 	r := gin.Default()
 	r = router.CollectRoute(r)
 
-	fmt.Println("starting deepl server at 8000...")
 	if port == 0 {
-		r.Run(":8000")
-	} else {
-		r.Run(fmt.Sprintf(":%v", port))
+		port = 8080
+	}
+
+	fmt.Printf("starting deepl server at %v...", port)
+
+	if err := r.Run(fmt.Sprintf("127.0.0.1:%v", port)); err != nil {
+		log.Fatalf("starting deepl server error: %v", err)
 	}
 }
 
