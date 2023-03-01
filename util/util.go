@@ -6,8 +6,6 @@ import (
 	"bytes"
 	"deepl_api/model/deepl"
 	"encoding/json"
-	"io"
-	"math"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -18,7 +16,9 @@ var NextId int64
 
 func init() {
 	//按规则生成结果
-	NextId = int64(math.Round(rand.New(rand.NewSource(time.Now().UnixNano())).Float64()*10000.0) * 10000)
+	rand.Seed(time.Now().Unix())
+	num := rand.Int63n(99999) + 8300000
+	NextId = num * 1000
 }
 
 func CreateId() int64 {
@@ -33,19 +33,15 @@ func CreateId() int64 {
 //	@param texts
 //	@return int64
 func GenerateTimestamp(texts string) int64 {
+	iCount := int64(strings.Count(texts, "i"))
 	// 当前时间戳
-	num := time.Now().UnixMilli()
-	// i 计数
-	var num2 int64
-	for _, text := range texts {
-		if string(text) == "i" {
-			num2++
-		}
+	ts := time.Now().UnixMilli()
+	if iCount != 0 {
+		iCount = iCount + 1
+		return ts - ts%iCount + iCount
+	} else {
+		return ts
 	}
-	if num2 == 0 {
-		num2 = 1
-	}
-	return num - num%num2 + num2
 }
 
 func adjustJsonContent(sourceReq string, id int64) (targetReq string) {
@@ -55,28 +51,7 @@ func adjustJsonContent(sourceReq string, id int64) (targetReq string) {
 	} else {
 		method = "\"method\": \""
 	}
-	targetReq = strings.Replace(sourceReq, "\"method\":\"", method, 1)
-	return
-}
-
-// ConvertRegionalNameAndSourceLang
-//
-//	@Description: 转换区域变量及source language
-//	@param sourceLang
-//	@param targetLang
-//	@return sourceLangRet
-//	@return regionalVariant
-func ConvertRegionalNameAndSourceLang(sourceLang, targetLang string) (sourceLangRet, regionalVariant string) {
-	if sourceLang == "auto" {
-		sourceLangRet = ""
-	} else {
-		sourceLangRet = sourceLang
-	}
-	if targetLang == "EN" {
-		regionalVariant = "en-US"
-	} else {
-		regionalVariant = ""
-	}
+	targetReq = strings.Replace(sourceReq, "\"method\":\"", method, -1)
 	return
 }
 
@@ -90,7 +65,7 @@ func ConvertRegionalNameAndSourceLang(sourceLang, targetLang string) (sourceLang
 //	@param timeSpan
 //	@param id
 //	@return reqStr
-func GenerateRequestStr(text, sourceLang, targetLang, regionalVariant string, timeSpan, id int64) (reqStr string) {
+func GenerateRequestStr(text, sourceLang, targetLang string, timeSpan, id int64) (reqStr string) {
 	req := deepl.Request{
 		Jsonrpc: "2.0",
 		Method:  "LMT_handle_texts",
@@ -98,7 +73,7 @@ func GenerateRequestStr(text, sourceLang, targetLang, regionalVariant string, ti
 			Texts: []deepl.ReqParamsTexts{
 				{
 					Text:                text,
-					RequestAlternatives: 3,
+					RequestAlternatives: 0,
 				},
 			},
 			Splitting: "newlines",
@@ -108,8 +83,9 @@ func GenerateRequestStr(text, sourceLang, targetLang, regionalVariant string, ti
 			},
 			Timestamp: timeSpan,
 			CommonJobParams: deepl.ReqParamsCommonJobParams{
-				WasSpoken:       false,
-				RegionalVariant: regionalVariant,
+				WasSpoken:    false,
+				TranscribeAS: "",
+				//RegionalVariant: regionalVariant,
 			},
 		},
 		Id: id,
@@ -140,12 +116,12 @@ func GenerateRequestStr(text, sourceLang, targetLang, regionalVariant string, ti
 //	@param header
 //	@return []byte
 //	@return error
-func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
+func HttpPost(url, reqStr string, header map[string]string) (http.Response, error) {
 	client := &http.Client{}
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(reqStr)))
 	if err != nil {
-		return nil, err
+		return http.Response{StatusCode: http.StatusInternalServerError}, err
 	}
 	for k, v := range header {
 		req.Header.Set(k, v)
@@ -153,13 +129,8 @@ func HttpPost(url, reqStr string, header map[string]string) ([]byte, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return http.Response{StatusCode: http.StatusInternalServerError}, err
 	}
-	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return body, nil
+	return *resp, nil
 }

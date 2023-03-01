@@ -2,10 +2,8 @@ package core
 
 import (
 	"deepl_api/global"
-	"deepl_api/model/deepl"
 	"deepl_api/router"
 	"deepl_api/util"
-	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -35,10 +33,7 @@ func GinServe(port int) {
 }
 
 var (
-	URL         = "https://www2.deepl.com/jsonrpc"
-	Refer       = "https://www.deepl.com/"
-	ContentType = "application/json"
-	UserAgent   = "DeepL-iOS/2.4.0 iOS 15.7.1 (iPhone14,2)"
+	URL = "https://www2.deepl.com/jsonrpc"
 )
 
 // Handle
@@ -46,40 +41,34 @@ var (
 //	@Description: 翻译处理函数
 //	@param sourceMsg
 func Handle(sourceMsg []string) {
-	var serveResp []string
+
 	text := sourceMsg[0]
 	sourceLang := sourceMsg[1]
 	targetLang := sourceMsg[2]
 	timeSpan := util.GenerateTimestamp(text)
 	id := util.CreateId()
-	sourceLang, regionalVariant := util.ConvertRegionalNameAndSourceLang(sourceLang, targetLang)
-	var reqStr = util.GenerateRequestStr(text, sourceLang, targetLang, regionalVariant, timeSpan, id)
+	var reqStr = util.GenerateRequestStr(text, sourceLang, targetLang, timeSpan, id)
 
 	var headers = make(map[string]string)
-	headers["Content-Type"] = ContentType
-	headers["Referer"] = Refer
 	headers["Content-Length"] = strconv.Itoa(len(reqStr))
-	headers["User-Agent"] = UserAgent
-	//log.Printf("generate source: %v", reqStr)
-	body, err := util.HttpPost(URL, reqStr, headers)
-	if err != nil {
-		global.GLO_RESP_CH <- []string{err.Error(), "NOT NULL"}
-		return
-	}
-	//log.Printf("translate source: %v", string(body))
-	var resp deepl.Response
-	_ = json.Unmarshal(body, &resp)
+	headers["User-Agent"] = "DeepL-iOS/2.4.0 iOS 15.7.1 (iPhone14,2)"
+	headers["Accept"] = "*/*"
+	headers["x-app-os-name"] = "IOS"
+	headers["x-app-os-version"] = "15.7.1"
+	headers["Accept-Language"] = "en-US,en;q=0.9"
+	headers["Accept-Encoding"] = "gzip,deflate,br"
+	headers["Content-Type"] = "application/json"
+	headers["x-app-device"] = "iPhone14,2"
+	headers["x-app-build"] = "353"
+	headers["x-app-version"] = "2.4"
+	headers["Referer"] = "https://www.deepl.com/"
+	headers["Connection"] = "keep-alive"
 
-	if resp.Result.Texts != nil {
-		serveResp = []string{resp.Result.Texts[0].Text, ""}
-		//log.Printf("translateText: %v\n", resp.Result.Texts[0].Text)
-	} else {
-		serveResp = []string{resp.Error.Message, string(rune(resp.Error.Code))}
-		log.Printf("翻译出错")
-		log.Printf("请求: %v", reqStr)
-		log.Printf("返回: %v", string(body))
-		//log.Printf("msg: %v\n", resp.Error.Message) //To many requests
-		//log.Printf("code: %v\n", resp.Error.Code)   //1042911
+	//log.Printf("generate source: %v", reqStr)
+
+	resp, err := util.HttpPost(URL, reqStr, headers)
+	if err != nil {
+		log.Printf("translate failed, error: %v", err)
 	}
-	global.GLO_RESP_CH <- serveResp
+	global.GLO_RESP_CH <- resp
 }

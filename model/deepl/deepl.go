@@ -21,11 +21,13 @@ type ReqParamsTexts struct {
 }
 type ReqParamsLang struct {
 	TargetLang             string `json:"target_lang"`
-	SourceLangUserSelected string `json:"source_lang_user_selected,omitempty"`
+	SourceLangUserSelected string `json:"source_lang_user_selected"`
+	//SourceLangUserSelected string `json:"source_lang_user_selected,omitempty"`
 }
 type ReqParamsCommonJobParams struct {
-	RegionalVariant string `json:"regionalVariant,omitempty"`
-	WasSpoken       bool   `json:"wasSpoken"`
+	//RegionalVariant string `json:"regionalVariant,omitempty"`
+	WasSpoken    bool   `json:"wasSpoken"`
+	TranscribeAS string `json:"transcribe_as"`
 }
 
 type Response struct {

@@ -3,13 +3,14 @@ package server
 import (
 	"deepl_api/core"
 	"deepl_api/global"
+	"net/http"
 )
 
 func Run() {
 	global.GLO_REQ_CH = make(chan []string)
-	global.GLO_RESP_CH = make(chan []string)
+	global.GLO_RESP_CH = make(chan http.Response)
 
-	go core.GinServe(9801)
+	go core.GinServe(8000)
 
 	for {
 		select {
