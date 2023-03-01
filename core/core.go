@@ -25,9 +25,9 @@ func GinServe(port int) {
 		port = 8080
 	}
 
-	fmt.Printf("starting deepl server at %v...", port)
+	fmt.Printf("starting deepl server at %v...\n", port)
 
-	if err := r.Run(fmt.Sprintf("127.0.0.1:%v", port)); err != nil {
+	if err := r.Run(fmt.Sprintf("0.0.0.0:%v", port)); err != nil {
 		log.Fatalf("starting deepl server error: %v", err)
 	}
 }

@@ -50,5 +50,5 @@ func Translate(ctx *gin.Context) {
 }
 
 func TranslateGet(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "POST {\"text\": \"input your content\", \"source_lang\": \"auto\", \"target_lang\": \"ZH\"} to /translate")
+	ctx.String(http.StatusOK, "POST {\"text\": \"input your content\", \"source_lang\": \"auto\", \"target_lang\": \"ZH\"} to /translate\n\n\nhttps://github.com/zggsong/stranslate\n")
 }
