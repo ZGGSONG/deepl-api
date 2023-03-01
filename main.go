@@ -9,7 +9,7 @@ import (
 func main() {
 	// 初始化日志
 	logger := &lumberjack.Logger{
-		Filename:   "./Log/deepl_api.log",
+		Filename:   "./log/deepl_api.log",
 		MaxSize:    10,   // 日志文件大小，单位是 MB
 		MaxBackups: 3,    // 最大过期日志保留个数
 		MaxAge:     28,   // 保留过期文件最大时间，单位 天
