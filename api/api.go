@@ -6,8 +6,8 @@ import (
 	"deepl_api/model/deepl"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 	"io"
+	"log"
 	"net/http"
 )
 

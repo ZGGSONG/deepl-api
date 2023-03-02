@@ -5,10 +5,10 @@ import (
 	"deepl_api/router"
 	"deepl_api/util"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 )
 
 // GinServe
@@ -32,16 +32,12 @@ func GinServe(port int) {
 	}
 }
 
-var (
-	URL = "https://www2.deepl.com/jsonrpc"
-)
-
 // Handle
 //
 //	@Description: 翻译处理函数
 //	@param sourceMsg
 func Handle(sourceMsg []string) {
-
+	url := "https://www2.deepl.com/jsonrpc"
 	text := sourceMsg[0]
 	sourceLang := sourceMsg[1]
 	targetLang := sourceMsg[2]
@@ -64,9 +60,7 @@ func Handle(sourceMsg []string) {
 	headers["Referer"] = "https://www.deepl.com/"
 	headers["Connection"] = "keep-alive"
 
-	//log.Printf("generate source: %v", reqStr)
-
-	resp, err := util.HttpPost(URL, reqStr, headers)
+	resp, err := util.HttpPost(url, reqStr, headers)
 	if err != nil {
 		log.Printf("translate failed, error: %v", err)
 	}
