@@ -4,7 +4,7 @@ package util
 
 import (
 	"bytes"
-	"deepl_api/model/deepl"
+	"deepl_api/model"
 	"encoding/json"
 	"math/rand"
 	"net/http"
@@ -27,11 +27,6 @@ func CreateId() int64 {
 	return num
 }
 
-// GenerateTimestamp
-//
-//	@Description: 生成特定时间戳
-//	@param texts
-//	@return int64
 func GenerateTimestamp(texts string) int64 {
 	iCount := int64(strings.Count(texts, "i"))
 	// 当前时间戳
@@ -55,34 +50,24 @@ func adjustJsonContent(sourceReq string, id int64) (targetReq string) {
 	return
 }
 
-// GenerateRequestStr
-//
-//	@Description: 构造请求json
-//	@param text
-//	@param sourceLang
-//	@param targetLang
-//	@param regionalVariant
-//	@param timeSpan
-//	@param id
-//	@return reqStr
 func GenerateRequestStr(text, sourceLang, targetLang string, timeSpan, id int64) (reqStr string) {
-	req := deepl.Request{
+	req := model.DeepLRequest{
 		Jsonrpc: "2.0",
 		Method:  "LMT_handle_texts",
-		Params: deepl.ReqParams{
-			Texts: []deepl.ReqParamsTexts{
+		Params: model.ReqParams{
+			Texts: []model.ReqParamsTexts{
 				{
 					Text:                text,
 					RequestAlternatives: 0,
 				},
 			},
 			Splitting: "newlines",
-			Lang: deepl.ReqParamsLang{
+			Lang: model.ReqParamsLang{
 				SourceLangUserSelected: sourceLang,
 				TargetLang:             targetLang,
 			},
 			Timestamp: timeSpan,
-			CommonJobParams: deepl.ReqParamsCommonJobParams{
+			CommonJobParams: model.ReqParamsCommonJobParams{
 				WasSpoken:    false,
 				TranscribeAS: "",
 				//RegionalVariant: regionalVariant,
@@ -108,14 +93,6 @@ func GenerateRequestStr(text, sourceLang, targetLang string, timeSpan, id int64)
 	return
 }
 
-// HttpPost
-//
-//	@Description: 发送Post请求
-//	@param url
-//	@param reqStr
-//	@param header
-//	@return []byte
-//	@return error
 func HttpPost(url, reqStr string, header map[string]string) (http.Response, error) {
 	client := &http.Client{}
 

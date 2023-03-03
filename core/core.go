@@ -2,33 +2,87 @@ package core
 
 import (
 	"deepl_api/global"
-	"deepl_api/router"
+	"deepl_api/model"
 	"deepl_api/util"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
-// GinServe
-//
-//	@Description: 创建http服务
-//	@param port 监听端口
-func GinServe(port int) {
-	gin.SetMode(gin.ReleaseMode)
-
-	r := gin.Default()
-	r = router.CollectRoute(r)
+func HttpCore(port int) {
+	// 注册请求处理函数
+	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/translate", translateHandler)
 
 	if port == 0 {
-		port = 8080
+		port = 8000
 	}
 
-	fmt.Printf("starting deepl server at %v...\n", port)
+	// 启动HTTP服务器
+	fmt.Printf("deepl server starte at %v...\n", port)
 
-	if err := r.Run(fmt.Sprintf("0.0.0.0:%v", port)); err != nil {
-		log.Fatalf("starting deepl server error: %v", err)
+	if err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", port), nil); err != nil {
+		log.Fatalf("deepl server start error: %v", err)
+	}
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	// 处理主页请求
+	fmt.Fprintf(w, "POST {\"text\": \"input your content\", \"source_lang\": \"auto\", \"target_lang\": \"ZH\"} to /translate\n\n\ngithub.com/zggsong/stranslate\n")
+}
+
+func translateHandler(w http.ResponseWriter, r *http.Request) {
+	// 定义返回值类型
+	w.Header().Set("Content-Type", "application/json")
+	// 处理翻译请求
+	if r.Method == http.MethodGet {
+		homeHandler(w, r)
+		return
+	} else if r.Method != http.MethodPost {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// 从请求体中获取需要翻译的文本
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Bad DeepLRequest", http.StatusBadRequest)
+		return
+	}
+	//text := string(body)
+
+	var req model.Request
+	var deeplResp model.DeepLResponse
+	if err = json.Unmarshal(body, &req); err != nil {
+		http.Error(w, "Json Unmarshal Failed", http.StatusInternalServerError)
+		return
+	}
+
+	global.GLO_REQ_CH <- []string{req.Text, req.SourceLang, req.TargetLang}
+
+	select {
+	case _resp := <-global.GLO_RESP_CH:
+		defer _resp.Body.Close()
+
+		body, _ := io.ReadAll(_resp.Body)
+		_ = json.Unmarshal(body, &deeplResp)
+		if _resp.StatusCode == http.StatusOK {
+			bytes, _ := json.Marshal(model.Response{
+				Code: http.StatusOK,
+				Data: deeplResp.Result.Texts[0].Text,
+			})
+			_, _ = w.Write(bytes)
+
+		} else {
+			bytes, _ := json.Marshal(model.Response{
+				Code: http.StatusTooManyRequests,
+				Data: deeplResp.Error.Message,
+			})
+			_, _ = w.Write(bytes)
+		}
 	}
 }
 
