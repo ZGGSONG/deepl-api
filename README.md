@@ -53,6 +53,6 @@ curl -X POST -d '{"text":"input your content","source_lang":"auto","target_lang"
 
 ## Author
 
-**deepl-api** © [zggsong](https://github.com/zggsong), Released under the [MIT](https://github.com/ZGGSONG/deepl-api/blob/main/LICENSE) License.<br>
+**deepl-api** © [zggsong](https://github.com/zggsong), Released under the [LGPL-3.0](https://github.com/ZGGSONG/deepl-api/blob/main/LICENSE) License.<br>
 
 > Website [Blog](https://www.zggsong.com) · GitHub [@zggsong](https://github.com/zggsong)
