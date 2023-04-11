@@ -1,18 +1,31 @@
-## deepl_api
+## Description
 
-逆向 DeepL 客户端自建 API
+Reverse the DeepL client-side self-built API
 
-## docker
+<a href="https://hub.docker.com/r/zggsong/translate">
+  <img alt="Docker pull" src="https://img.shields.io/docker/pulls/zggsong/translate">
+</a>
+
+## Usage
+
+### Docker
 
 ```shell
 docker pull zggsong/translate && docker run -itd --name deepl -p 4006:8000 zggsong/translate
 ```
 
+### Binary files
+
+Select your system version to download >> [Release](https://github.com/ZGGSONG/deepl-api/releases)
+
+### Curl test
+
 ```shell
 curl -X POST -d '{"text":"input your content","source_lang":"auto","target_lang":"ZH"}' "localhost:4006/translate"
 ```
 
-> language
+## Languages
+
 - `DE`: 德语
 - `EN`: 英语
 - `ES`: 西班牙语
@@ -37,3 +50,9 @@ curl -X POST -d '{"text":"input your content","source_lang":"auto","target_lang"
 - `SK`: 斯洛伐克语
 - `SL`: 斯洛文尼亚语
 - `SV`: 瑞典语
+
+## Author
+
+**deepl-api** © [zggsong](https://github.com/zggsong), Released under the [MIT](https://github.com/ZGGSONG/deepl-api/blob/main/LICENSE) License.<br>
+
+> Website [Blog](https://www.zggsong.com) · GitHub [@zggsong](https://github.com/zggsong)
