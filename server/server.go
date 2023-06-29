@@ -3,10 +3,12 @@ package server
 import (
 	"deepl_api/model"
 	"deepl_api/util"
+	"github.com/fatih/color"
 	"github.com/goccy/go-json"
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type APIServer struct {
@@ -96,7 +98,13 @@ func (s *APIServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var deeplResp model.DeepLResponse
 	b, _ := io.ReadAll(_resp.Body)
-	_ = json.Unmarshal(b, &deeplResp)
+	if err = json.Unmarshal(b, &deeplResp); err != nil {
+		w.Write(marshal(model.Response{
+			Code: http.StatusInternalServerError,
+			Data: err.Error(),
+		}))
+		return
+	}
 	var resp = model.Response{
 		Code: _resp.StatusCode,
 	}
@@ -110,6 +118,9 @@ func (s *APIServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func marshal(content model.Response) []byte {
+	if content.Code != http.StatusOK {
+		color.Red("[%v] Request Err: %v", time.Now().Format("2006-01-02 15:04:05"), content.Data)
+	}
 	bytes, _ := json.Marshal(content)
 	return bytes
 }
