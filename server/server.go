@@ -3,6 +3,7 @@ package server
 import (
 	"deepl_api/model"
 	"deepl_api/util"
+	"github.com/andybalholm/brotli"
 	"github.com/fatih/color"
 	"github.com/goccy/go-json"
 	"io"
@@ -96,8 +97,20 @@ func (s *APIServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// br更新
+	// Brotli是一种开源的压缩算法，可以让数据在互联网上以更快的速度传输
+	// https://zhuanlan.zhihu.com/p/33405940
 	var deeplResp model.DeepLResponse
-	b, _ := io.ReadAll(_resp.Body)
+	var bodyReader io.Reader
+	switch _resp.Header.Get("Content-Encoding") {
+	case "br":
+		bodyReader = brotli.NewReader(_resp.Body)
+	default:
+		bodyReader = _resp.Body
+	}
+	b, _ := io.ReadAll(bodyReader)
+	// 更新结束
+
 	if err = json.Unmarshal(b, &deeplResp); err != nil {
 		w.Write(marshal(model.Response{
 			Code: http.StatusInternalServerError,

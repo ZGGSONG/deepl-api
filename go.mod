@@ -3,6 +3,7 @@ module deepl_api
 go 1.18
 
 require (
+	github.com/andybalholm/brotli v1.0.5
 	github.com/fatih/color v1.14.1
 	github.com/goccy/go-json v0.9.7
 )
