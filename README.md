@@ -50,6 +50,39 @@ curl -X POST -d '{"text":"input your content","source_lang":"auto","target_lang"
 - `SK`: 斯洛伐克语
 - `SL`: 斯洛文尼亚语
 - `SV`: 瑞典语
+- `TR`: 土耳其语
+
+> Supportted
+
+```txt
+EN
+DE
+FR
+ES
+PT
+IT
+NL
+PL
+RU
+ZH
+JA
+BG
+CS
+DA
+EL
+ET
+FI
+HU
+LT
+LV
+RO
+SK
+SL
+SV
+TR
+ID
+```
+
 
 ## Author
 
